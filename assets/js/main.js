@@ -239,3 +239,125 @@ document.addEventListener('DOMContentLoaded', function () {
     setupSpans();
     cycle();
 });
+
+// Project carousels with autoplay + swipe
+document.addEventListener('DOMContentLoaded', function () {
+    var carousels = document.querySelectorAll('.project-carousel');
+    carousels.forEach(function (carousel) {
+        var track = carousel.querySelector('.carousel-track');
+        var slides = Array.prototype.slice.call(track ? track.children : []);
+        if (!track || slides.length === 0) return;
+
+        var dotsContainer = carousel.querySelector('.carousel-dots');
+        var dots = [];
+        var index = 0;
+        var autoTimer = null;
+        var autoDelay = 4000;
+
+        slides.forEach(function (_, i) {
+            var dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dot.type = 'button';
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            dot.addEventListener('click', function () {
+                goTo(i);
+                restartAuto();
+            });
+            dotsContainer.appendChild(dot);
+            dots.push(dot);
+        });
+
+        var update = function () {
+            track.style.transform = 'translateX(-' + (index * 100) + '%)';
+            dots.forEach(function (dot, i) { dot.classList.toggle('active', i === index); });
+        };
+
+        var goTo = function (i) {
+            index = (i + slides.length) % slides.length;
+            update();
+        };
+
+        var next = function () { goTo(index + 1); };
+        var restartAuto = function () {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(next, autoDelay);
+        };
+
+        // Swipe support
+        var startX = 0;
+        var dragging = false;
+        carousel.addEventListener('pointerdown', function (e) {
+            dragging = true;
+            startX = e.clientX;
+            if (autoTimer) clearInterval(autoTimer);
+        });
+        var endDrag = function (e) {
+            if (!dragging) return;
+            var dx = e.clientX - startX;
+            if (Math.abs(dx) > 40) {
+                if (dx < 0) { next(); } else { goTo(index - 1); }
+            }
+            dragging = false;
+            restartAuto();
+        };
+        carousel.addEventListener('pointerup', endDrag);
+        carousel.addEventListener('pointercancel', endDrag);
+
+        // Pause on hover (desktop)
+        carousel.addEventListener('pointerenter', function () { if (autoTimer) clearInterval(autoTimer); });
+        carousel.addEventListener('pointerleave', function () { restartAuto(); });
+
+        update();
+        // Autoplay only when explicitly enabled to avoid constant repaint/flicker on sections
+        var shouldAuto = carousel.getAttribute('data-autoplay') === 'true';
+        if (shouldAuto) {
+            restartAuto();
+        }
+    });
+});
+
+// Project accordions: ensure only one open per stack and keep one expanded
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.project-stack').forEach(function (stack) {
+        var items = Array.prototype.slice.call(stack.querySelectorAll('.project-accordion'));
+        if (!items.length) return;
+
+        var ensureOneOpen = function () {
+            var openItems = items.filter(function (el) { return el.hasAttribute('open'); });
+            if (!openItems.length && items[0]) {
+                items[0].setAttribute('open', '');
+                openItems = [items[0]];
+            }
+            if (openItems.length > 1) {
+                openItems.slice(1).forEach(function (el) { el.removeAttribute('open'); });
+            }
+        };
+
+        ensureOneOpen();
+
+        items.forEach(function (item) {
+            item.addEventListener('toggle', function () {
+                if (item.hasAttribute('open')) {
+                    items.forEach(function (other) {
+                        if (other !== item) { other.removeAttribute('open'); }
+                    });
+                } else {
+                    ensureOneOpen();
+                }
+            });
+
+            var summary = item.querySelector('summary');
+            if (summary) {
+                summary.addEventListener('click', function (e) {
+                    if (item.hasAttribute('open')) {
+                        e.preventDefault();
+                        item.setAttribute('open', '');
+                        items.forEach(function (other) {
+                            if (other !== item) { other.removeAttribute('open'); }
+                        });
+                    }
+                });
+            }
+        });
+    });
+});

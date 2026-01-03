@@ -20,31 +20,60 @@
   <style>
     /* Project card layout (stacked peek) */
     .project-card {
-      display: flex;
-      gap: 20px;
       background: #f5efe3;
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       position: relative;
       z-index: 1;
-      align-items: stretch;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      transition: max-height 0.6s ease, box-shadow 0.3s ease;
-      max-height: 1000px;
-    }
-    .project-card:not(:first-child) { margin-top: 16px; }
-    .project-card:hover { box-shadow: 0 16px 36px rgba(0,0,0,0.12); z-index: 3; }
-    .project-card.collapsed {
-      max-height: 80px;
+      transition: box-shadow 0.3s ease;
       overflow: hidden;
-      cursor: pointer;
     }
-    .project-card.collapsed .project-desc,
-    .project-card.collapsed .tools-title,
-    .project-card.collapsed .tool-badges,
-    .project-card.collapsed .links-title,
-    .project-card.collapsed .project-links {
+    .project-card:hover { box-shadow: 0 16px 36px rgba(0,0,0,0.12); z-index: 3; }
+    .project-card summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 800;
+      color: #1e1e1e;
+      outline: none;
+    }
+    .project-card summary:focus-visible {
+      outline: 2px solid #f3b23a;
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
+    .project-card summary::-webkit-details-marker { display: none; }
+    .project-card .project-title {
+      font-size: 18px;
+      line-height: 1.3;
+    }
+    .accordion-icon {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #1e1e1e;
+      border-left: 0;
+      border-top: 0;
+      transform: rotate(45deg);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .project-card[open] .accordion-icon { transform: rotate(225deg); }
+    .project-body {
+      padding: 0 16px 16px 16px;
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+      opacity: 1;
+      max-height: none;
+      overflow: visible;
+      transition: none;
+    }
+    .project-card:not([open]) .project-body {
       display: none;
     }
     .project-card .thumb {
@@ -60,6 +89,58 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+    .project-carousel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    .carousel-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s ease;
+    }
+    .project-slide {
+      flex: 0 0 100%;
+      height: 100%;
+    }
+    .project-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+    .project-slide img.contain-img {
+      object-fit: contain;
+      background: #f5efe3;
+    }
+    .carousel-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 5;
+    }
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.7);
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .carousel-dot.active {
+      background: #f3b23a;
+      border-color: #f3b23a;
+      transform: scale(1.1);
     }
     .project-card .project-content { flex: 1; }
     .project-card h3 { font-weight: 800; margin-bottom: 14px; color: #1e1e1e; }
@@ -77,6 +158,13 @@
       font-weight: 600;
       font-size: 13px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .tool-badge img {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
     }
     .tool-badge.alt { background: #f3b23a; }
     .tool-badge.dark { background: #243b55; }
@@ -96,11 +184,27 @@
       text-decoration: none;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     }
+    .project-stack {
+      position: relative;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    .project-stack .project-card {
+      margin-top: 0;
+      position: relative;
+    }
+    .project-stack .project-card h3 {
+      margin-bottom: 8px;
+    }
     @media (max-width: 992px) {
-      .project-card { flex-direction: column; padding: 22px; }
-      .project-card:not(:first-child) { margin-top: 16px; }
-      .project-card.collapsed { max-height: 130px; }
+      .project-card summary { padding: 14px 16px; }
+      .project-card .project-body {
+        flex-direction: column;
+        max-height: none;
+        opacity: 1;
+      }
       .project-card .thumb { width: 100%; flex: 0 0 auto; }
+      .project-stack { padding-bottom: 0; }
     }
 
     /* Skill grid */
@@ -366,63 +470,114 @@
                       <h5 data-aos="fade-left" data-aos-duration="800"><img src="assets/img/icons/sublogo1.svg" alt="">Cloud Infrastructure</h5>
                     </div>
                     <div class="space20"></div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="900">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Cloud landing zone dashboard">
-                      </div>
-                      <div class="project-content">
-                        <h3>Cloud Landing Zone Accelerator</h3>
-                        <p class="project-desc">Provisioned a secure, multi-account landing zone with network segmentation, guardrails, and IaC pipelines to standardize deployments across teams.</p>
-                        <p class="project-desc">Automated baseline services (VPCs, IAM, logging, backups) and cost controls, enabling teams to launch workloads in hours instead of weeks.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">AWS</span>
-                          <span class="tool-badge alt">Terraform</span>
-                          <span class="tool-badge dark">Azure</span>
-                          <span class="tool-badge green">Bash</span>
-                          <span class="tool-badge purple">Python</span>
+                    <div class="project-stack">
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="900" open>
+                      <summary>
+                        <span class="project-title">Bucket List Tracker (Serverless SaaS)</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/projects/Picture1.png" alt="Bucket list tracker UI"></div>
+                              <div class="project-slide"><img class="contain-img" src="assets/img/projects/OTWXtfp3SRGIlQrsM0x6_A0.png" alt="Serverless architecture view"></div>
+                              <div class="project-slide"><img src="assets/img/projects/OQ36OmuTnSueIqtTZVuY_o1.png" alt="Goal management flows"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="950">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Cloud migration dashboards">
-                      </div>
-                      <div class="project-content">
-                        <h3>Hybrid Cloud Migration</h3>
-                        <p class="project-desc">Migrated core workloads to a hybrid landing zone with VPN/Direct Connect, automated cutovers, and observability baselines.</p>
-                        <p class="project-desc">Implemented IaC blueprints for repeatable VPC builds, backup policies, and guardrails to keep environments compliant.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">AWS</span><span class="tool-badge alt">Terraform</span><span class="tool-badge dark">Azure</span><span class="tool-badge green">Ansible</span><span class="tool-badge purple">Python</span>
-                        </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Designed and deployed a serverless, cloud-native Bucket List Tracker that enables users to securely sign up, log in, and manage personal goals stored in the cloud.</p>
+                          <p class="project-desc">Implemented authentication, a GraphQL API, and scalable data storage using managed AWS services, with optional file uploads per goal. The application demonstrates end-to-end SaaS architecture, from frontend hosting to backend APIs and persistent storage, without managing servers.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
+                            <span class="tool-badge alt"><img src="assets/img/icons/awsamplify.svg" alt="">AWS Amplify</span>
+                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="">React</span>
+                            <span class="tool-badge green"><img src="assets/img/icons/amazoncognito.svg" alt="">Amazon Cognito</span>
+                            <span class="tool-badge purple"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS AppSync</span>
+                            <span class="tool-badge"><img src="assets/img/icons/amazondynamodb.svg" alt="">DynamoDB</span>
+                            <span class="tool-badge alt"><img src="assets/img/icons/amazons3.svg" alt="">Amazon S3</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri/bucketlistapp" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="1000">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Cloud cost optimization">
-                      </div>
-                      <div class="project-content">
-                        <h3>Cloud FinOps Toolkit</h3>
-                        <p class="project-desc">Built cost dashboards and alerts for tagging hygiene, idle resources, and RI/Savings Plan coverage with automated remediations.</p>
-                        <p class="project-desc">Aligned budgets to business units with chargeback reports and weekly variance digests for engineering leads.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">AWS</span><span class="tool-badge alt">Athena</span><span class="tool-badge dark">Azure</span><span class="tool-badge green">Bash</span><span class="tool-badge purple">Python</span>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
+                      <summary>
+                        <span class="project-title">Hybrid Cloud Migration</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Cloud migration dashboards"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Hybrid landing zone view"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Cutover observability"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Migrated core workloads to a hybrid landing zone with VPN/Direct Connect, automated cutovers, and observability baselines.</p>
+                          <p class="project-desc">Implemented IaC blueprints for repeatable VPC builds, backup policies, and guardrails to keep environments compliant.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
+                            <span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="">Terraform</span>
+                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="">Azure</span>
+                            <span class="tool-badge green"><img src="https://cdn.simpleicons.org/ansible/EE0000" alt="">Ansible</span>
+                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
+                      <summary>
+                        <span class="project-title">Cloud FinOps Toolkit</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Cloud cost optimization"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="FinOps dashboard views"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Guardrails and tagging hygiene"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
+                        </div>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Built cost dashboards and alerts for tagging hygiene, idle resources, and RI/Savings Plan coverage with automated remediations.</p>
+                          <p class="project-desc">Aligned budgets to business units with chargeback reports and weekly variance digests for engineering leads.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
+                            <span class="tool-badge alt"><img src="assets/img/icons/amazonwebservices.svg" alt="">Athena</span>
+                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="">Azure</span>
+                            <span class="tool-badge green"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
+                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
                     </div>
                   </div>
 
@@ -432,63 +587,104 @@
                       <h5 data-aos="fade-left" data-aos-duration="900"><img src="assets/img/icons/sublogo1.svg" alt="">Data Analytics/Engineering</h5>
                     </div>
                     <div class="space20"></div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="900">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Data analytics dashboard">
-                      </div>
-                      <div class="project-content">
-                        <h3>Sales Intelligence Dashboard</h3>
-                        <p class="project-desc">Built an end-to-end data pipeline from ingestion to semantic layer, delivering self-serve revenue, churn, and cohort insights for sales leadership.</p>
-                        <p class="project-desc">Modeled facts/dimensions, optimized queries, and automated refreshes to keep dashboards fresh with SLA-backed latency.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">SQL</span>
-                          <span class="tool-badge alt">dbt</span>
-                          <span class="tool-badge purple">Python</span>
-                          <span class="tool-badge dark">Airflow</span>
-                          <span class="tool-badge green">Power BI</span>
+                    <div class="project-stack">
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="900" open>
+                      <summary>
+                        <span class="project-title">Sales Intelligence Dashboard</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Data analytics dashboard"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Semantic layer views"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Revenue and churn reporting"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="950">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Streaming analytics board">
-                      </div>
-                      <div class="project-content">
-                        <h3>Real-Time Metrics Pipeline</h3>
-                        <p class="project-desc">Ingested clickstream events into a streaming lakehouse, powering real-time KPIs and anomaly alerts for product teams.</p>
-                        <p class="project-desc">Delivered curated feature stores and CDC feeds for downstream ML/BI consumers with SLA-backed freshness.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">Kafka</span><span class="tool-badge alt">dbt</span><span class="tool-badge purple">Python</span><span class="tool-badge dark">Airflow</span><span class="tool-badge green">Looker</span>
-                        </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Built an end-to-end data pipeline from ingestion to semantic layer, delivering self-serve revenue, churn, and cohort insights for sales leadership.</p>
+                          <p class="project-desc">Modeled facts/dimensions, optimized queries, and automated refreshes to keep dashboards fresh with SLA-backed latency.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/mysql/00758F" alt="MySQL">SQL</span>
+                            <span class="tool-badge alt"><img src="https://cdn.simpleicons.org/dbt/ffffff" alt="">dbt</span>
+                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+                            <span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span>
+                            <span class="tool-badge green"><img src="https://cdn.simpleicons.org/powerbi/ffffff" alt="">Power BI</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="1000">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Data quality monitors">
-                      </div>
-                      <div class="project-content">
-                        <h3>Data Quality Command Center</h3>
-                        <p class="project-desc">Implemented rules, contracts, and lineage views to detect schema drift and null explosions before they hit dashboards.</p>
-                        <p class="project-desc">Surfaced data SLAs with incident workflows so owners get paged and issues are triaged fast.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">Great Expectations</span><span class="tool-badge alt">Airbyte</span><span class="tool-badge purple">Python</span><span class="tool-badge dark">Airflow</span><span class="tool-badge green">Snowflake</span>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
+                      <summary>
+                        <span class="project-title">Real-Time Metrics Pipeline</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Streaming analytics board"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Real-time metrics feed"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Feature store snapshots"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Ingested clickstream events into a streaming lakehouse, powering real-time KPIs and anomaly alerts for product teams.</p>
+                          <p class="project-desc">Delivered curated feature stores and CDC feeds for downstream ML/BI consumers with SLA-backed freshness.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/apachekafka/ffffff" alt="">Kafka</span><span class="tool-badge alt"><img src="https://cdn.simpleicons.org/dbt/ffffff" alt="">dbt</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/looker/ffffff" alt="">Looker</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
+                      <summary>
+                        <span class="project-title">Data Quality Command Center</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Data quality monitors"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Lineage and SLAs"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Incident workflows"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
+                        </div>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Implemented rules, contracts, and lineage views to detect schema drift and null explosions before they hit dashboards.</p>
+                          <p class="project-desc">Surfaced data SLAs with incident workflows so owners get paged and issues are triaged fast.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/greatexpectations/ffffff" alt="">Great Expectations</span><span class="tool-badge alt"><img src="https://cdn.simpleicons.org/airbyte/ffffff" alt="">Airbyte</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/snowflake/ffffff" alt="">Snowflake</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
                     </div>
 
                     <div class="space30"></div>
@@ -496,65 +692,105 @@
                       <h5 data-aos="fade-left" data-aos-duration="900"><img src="assets/img/icons/sublogo1.svg" alt="">Artificial Intelligence (AI)</h5>
                     </div>
                     <div class="space20"></div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="900">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="AI financial app">
-                      </div>
-                      <div class="project-content">
-                        <h3>AI Financial Powered App</h3>
-                        <p class="project-desc">Coordinated AI copilots that schedule sales meetings, balance workloads, and surface risk alerts for distributed teams.</p>
-                        <p class="project-desc">Integrated LLM prompts, task orchestration, and guardrails to ensure accurate recommendations across CRM and analytics data.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">Python</span>
-                          <span class="tool-badge purple">TypeScript</span>
-                          <span class="tool-badge alt">JavaScript</span>
-                          <span class="tool-badge dark">SQL</span>
-                          <span class="tool-badge green">Java</span>
-                          <span class="tool-badge">Bash</span>
+                    <div class="project-stack">
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="900" open>
+                      <summary>
+                        <span class="project-title">AI Financial Powered App</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="AI financial app"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="AI recommendations view"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Copilot orchestration"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="950">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="AI assistant board">
-                      </div>
-                      <div class="project-content">
-                        <h3>Support Copilot</h3>
-                        <p class="project-desc">Built an LLM copilot for support reps with retrieval from tickets, runbooks, and product docs to cut handle time.</p>
-                        <p class="project-desc">Added guardrails, feedback loops, and red-team tests to keep responses safe and auditable.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">Python</span><span class="tool-badge purple">TypeScript</span><span class="tool-badge alt">JavaScript</span><span class="tool-badge dark">SQL</span><span class="tool-badge green">LangChain</span>
-                        </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Coordinated AI copilots that schedule sales meetings, balance workloads, and surface risk alerts for distributed teams.</p>
+                          <p class="project-desc">Integrated LLM prompts, task orchestration, and guardrails to ensure accurate recommendations across CRM and analytics data.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span>
+                            <span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span>
+                            <span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span>
+                            <span class="tool-badge green"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="">Java</span>
+                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="project-card" data-aos="fade-left" data-aos-duration="1000">
-                      <div class="thumb">
-                        <img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="ML operations dashboard">
-                      </div>
-                      <div class="project-content">
-                        <h3>ML Ops Observability</h3>
-                        <p class="project-desc">Deployed monitoring for drift, data integrity, and latency with auto rollbacks and canary promotion policies.</p>
-                        <p class="project-desc">Centralized experiment tracking and model registry with CI/CD to lower cycle time from notebook to prod.</p>
-                        <div class="tools-title">Tools</div>
-                        <div class="tool-badges">
-                          <span class="tool-badge">Python</span><span class="tool-badge purple">TypeScript</span><span class="tool-badge alt">JavaScript</span><span class="tool-badge dark">SQL</span><span class="tool-badge green">MLflow</span><span class="tool-badge">Bash</span>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
+                      <summary>
+                        <span class="project-title">Support Copilot</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="AI assistant board"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Support copilot responses"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Runbook retrieval"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
                         </div>
-                        <div class="links-title">Links</div>
-                        <div class="project-links">
-                          <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Built an LLM copilot for support reps with retrieval from tickets, runbooks, and product docs to cut handle time.</p>
+                          <p class="project-desc">Added guardrails, feedback loops, and red-team tests to keep responses safe and auditable.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span><span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/langchain/ffffff" alt="">LangChain</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </details>
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
+                      <summary>
+                        <span class="project-title">ML Ops Observability</span>
+                        <span class="accordion-icon" aria-hidden="true"></span>
+                      </summary>
+                      <div class="project-body">
+                        <div class="thumb">
+                          <div class="project-carousel stacked" data-autoplay="false">
+                            <div class="carousel-track">
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="ML operations dashboard"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Model monitoring views"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Registry and experiments"></div>
+                            </div>
+                            <div class="carousel-dots"></div>
+                          </div>
+                        </div>
+                        <div class="project-content">
+                          <div class="tools-title">Description</div>
+                          <p class="project-desc">Deployed monitoring for drift, data integrity, and latency with auto rollbacks and canary promotion policies.</p>
+                          <p class="project-desc">Centralized experiment tracking and model registry with CI/CD to lower cycle time from notebook to prod.</p>
+                          <div class="tools-title">Tools</div>
+                          <div class="tool-badges">
+                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span><span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/mlflow/ffffff" alt="">MLflow</span><span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
+                          </div>
+                          <div class="links-title">Links</div>
+                          <div class="project-links">
+                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
                   </div>
                 </div>
               </div>
@@ -573,54 +809,127 @@
                     </div>
                     <div class="space16"></div>
                     <div class="skill-grid">
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="800">
-                        <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
-                        <div class="skill-label">MySQL</div>
+                      <div class="skill-category" data-aos="fade-up" data-aos-duration="800">
+                        <div class="skill-category-title">Languages</div>
+                        <div class="skill-items">
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python logo"></div>
+                            <div class="skill-label">Python</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" alt="SQL logo"></div>
+                            <div class="skill-label">SQL</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript logo"></div>
+                            <div class="skill-label">TypeScript</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript logo"></div>
+                            <div class="skill-label">JavaScript</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java logo"></div>
+                            <div class="skill-label">Java</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="Bash logo"></div>
+                            <div class="skill-label">Bash</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="850">
-                        <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
-                        <div class="skill-label">PostgreSQL</div>
+                      <div class="skill-category" data-aos="fade-up" data-aos-duration="900">
+                        <div class="skill-category-title">Cloud &amp; Infrastructure</div>
+                        <div class="skill-items">
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS logo"></div>
+                            <div class="skill-label">AWS</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="Azure logo"></div>
+                            <div class="skill-label">Azure</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="Google Cloud logo"></div>
+                            <div class="skill-label">GCP</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes logo"></div>
+                            <div class="skill-label">Kubernetes</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker logo"></div>
+                            <div class="skill-label">Docker</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform logo"></div>
+                            <div class="skill-label">Terraform</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="900">
-                        <div class="skill-icon"><i class="fa-brands fa-git-alt"></i></div>
-                        <div class="skill-label">Git</div>
+                      <div class="skill-category" data-aos="fade-up" data-aos-duration="1000">
+                        <div class="skill-category-title">Data &amp; ML</div>
+                        <div class="skill-items">
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL logo"></div>
+                            <div class="skill-label">MySQL</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL logo"></div>
+                            <div class="skill-label">PostgreSQL</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachespark/apachespark-original.svg" alt="PySpark logo"></div>
+                            <div class="skill-label">PySpark</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" alt="Pandas logo"></div>
+                            <div class="skill-label">Pandas</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" alt="Scikit-Learn logo"></div>
+                            <div class="skill-label">Scikit-Learn</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="assets/img/icons/snowflake.svg" alt="Snowflake logo"></div>
+                            <div class="skill-label">Snowflake</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="assets/img/icons/tableau.svg" alt="Tableau logo"></div>
+                            <div class="skill-label">Tableau</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="assets/img/icons/powerbi.svg" alt="Power BI logo"></div>
+                            <div class="skill-label">Power BI</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="950">
-                        <div class="skill-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <div class="skill-label">AWS</div>
+                      <div class="skill-category" data-aos="fade-up" data-aos-duration="1100">
+                        <div class="skill-category-title">Development</div>
+                        <div class="skill-items">
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git logo"></div>
+                            <div class="skill-label">Git</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js logo"></div>
+                            <div class="skill-label">Node.js</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React logo"></div>
+                            <div class="skill-label">React</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub logo"></div>
+                            <div class="skill-label">GitHub</div>
+                          </div>
+                          <div class="skill-item">
+                            <div class="skill-logo-wrap"><img class="skill-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" alt="GitLab logo"></div>
+                            <div class="skill-label">GitLab</div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1000">
-                        <div class="skill-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <div class="skill-label">Azure</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1050">
-                        <div class="skill-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <div class="skill-label">GCP</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1100">
-                        <div class="skill-icon"><i class="fa-brands fa-docker"></i></div>
-                        <div class="skill-label">Docker</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1150">
-                        <div class="skill-icon"><i class="fa-solid fa-network-wired"></i></div>
-                        <div class="skill-label">Kubernetes</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1200">
-                        <div class="skill-icon"><i class="fa-solid fa-layer-group"></i></div>
-                        <div class="skill-label">Terraform</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1250">
-                        <div class="skill-icon"><i class="fa-brands fa-python"></i></div>
-                        <div class="skill-label">Python</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1300">
-                        <div class="skill-icon"><i class="fa-solid fa-table"></i></div>
-                        <div class="skill-label">SQL</div>
-                      </div>
-                      <div class="skill-item" data-aos="zoom-out" data-aos-duration="1350">
-                        <div class="skill-icon"><i class="fa-solid fa-chart-column"></i></div>
-                        <div class="skill-label">Power BI</div>
-                      </div>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -641,7 +950,7 @@
                       <div class="space20"></div>
                       <div class="experience-timeline">
                         <div class="experience-item" data-aos="fade-left" data-aos-duration="900">
-                          <div class="exp-icon placeholder-icon">A</div>
+                          <div class="exp-icon photo"><img src="assets/img/all-images/hero/Tinos.jpg" alt="Freelance Solutions Architect"></div>
                           <div class="exp-body">
                             <div class="exp-top">
                               <div class="exp-heading">
@@ -670,7 +979,7 @@
                         </div>
 
                         <div class="experience-item" data-aos="fade-left" data-aos-duration="1000">
-                          <div class="exp-icon placeholder-icon">B</div>
+                          <div class="exp-icon photo"><img src="assets/img/William Bain.jpg" alt="William Bain &amp; Company Holdings"></div>
                           <div class="exp-body">
                             <div class="exp-top">
                               <div class="exp-heading">
@@ -694,7 +1003,7 @@
                         </div>
 
                         <div class="experience-item" data-aos="fade-left" data-aos-duration="1100">
-                          <div class="exp-icon placeholder-icon">C</div>
+                          <div class="exp-icon photo"><img src="assets/img/Kansai Plascon.jpg" alt="Kansai Plascon Zimbabwe"></div>
                           <div class="exp-body">
                               <div class="exp-top">
                                 <div class="exp-heading">
@@ -741,7 +1050,7 @@
                     <div class="space20"></div>
                     <div class="experience-timeline">
                       <div class="experience-item" data-aos="fade-left" data-aos-duration="900">
-                        <div class="exp-icon placeholder-icon">Y</div>
+                        <div class="exp-icon photo logo"><img src="assets/img/Yeshiva_University.svg.png" alt="Yeshiva University"></div>
                         <div class="exp-body">
                           <div class="exp-top">
                             <div class="exp-heading">
@@ -757,7 +1066,7 @@
                       </div>
 
                       <div class="experience-item" data-aos="fade-left" data-aos-duration="1000">
-                        <div class="exp-icon placeholder-icon">U</div>
+                        <div class="exp-icon photo logo"><img src="assets/img/University_of_Zimbabwe_LOGO.png" alt="University of Zimbabwe"></div>
                         <div class="exp-body">
                           <div class="exp-top">
                             <div class="exp-heading">
@@ -767,7 +1076,7 @@
                               <span class="exp-dates">June 2024</span>
                               <span class="exp-location">Harare, ZW</span>
                             </div>
-                            <p class="exp-company">BSc (Hons) Data Science and Informatics � GPA: 3.7</p>
+                            <p class="exp-company">BSc (Hons) Data Science and Informatics GPA: 3.7</p>
                           </div>
                         </div>
                       </div>
@@ -780,15 +1089,15 @@
                     <div class="space20"></div>
                     <div class="experience-timeline">
                       <div class="experience-item" data-aos="fade-left" data-aos-duration="900">
-                        <div class="exp-icon placeholder-icon">A</div>
+                        <div class="exp-icon photo"><img src="assets/img/cloudprac.png" alt="AWS Certified Cloud Practitioner badge"></div>
                         <div class="exp-body">
                           <div class="exp-top">
                             <div class="exp-heading">
-                              <h4>AWS Certified Solutions Architect � Associate</h4>
+                              <h4>AWS Certified Cloud Practitioner (CLFC02)</h4>
                             </div>
                             <div class="exp-meta">
-                              <span class="exp-dates">Issued May 2023</span>
-                              <span class="exp-expiry">Expires May 2026</span>
+                              <span class="exp-dates">Issued December 2025</span>
+                              <span class="exp-expiry">Expires December 2028</span>
                             </div>
                             <p class="exp-company">Amazon Web Services</p>
                           </div>
@@ -796,17 +1105,17 @@
                       </div>
 
                       <div class="experience-item" data-aos="fade-left" data-aos-duration="1000">
-                        <div class="exp-icon placeholder-icon">Z</div>
+                        <div class="exp-icon photo"><img src="assets/img/SAA.png" alt="AWS Certified Solutions Architect Associate badge"></div>
                         <div class="exp-body">
                           <div class="exp-top">
                             <div class="exp-heading">
-                              <h4>Microsoft Certified: Azure Fundamentals</h4>
+                              <h4>AWS Certified Solutions Architect Associate(SAA-C03)</h4>
                             </div>
                             <div class="exp-meta">
-                              <span class="exp-dates">Issued March 2022</span>
-                              <span class="exp-expiry">Expires March 2025</span>
+                              <span class="exp-dates">Issued January 2025</span>
+                              <span class="exp-expiry">Expires January 2029</span>
                             </div>
-                            <p class="exp-company">Microsoft</p>
+                            <p class="exp-company">Amazon Web Services</p>
                           </div>
                         </div>
                       </div>
@@ -831,81 +1140,7 @@
 <!--===== MAIN AREA STARTS =======-->
 
 
- <!--===== POPUP STARTS=======-->
- <div class="custom-model-main">
-  <div class="custom-model-inner">        
-  <div class="close-btn">×</div>
-      <div class="custom-model-wrap">
-          <div class="pop-up-content-wrap">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="opend-section">
-                  <div class="row">
-                    <div class="col-lg-7">
-                      <div class="boxes-area">
-                        <div class="img1">
-                          <img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="">
-                        </div>
-                        <div class="content">
-                          <div class="tags-area">
-                            <a href="#">23 April 2024</a>
-                            <a href="#">Alex Ross</a>
-                          </div>
-                          <a href="#">Crafting Compelling Designs and Strategic Marketing: A Creative Journey Unveiled</a>
-                          <p>In today's fast-paced digital landscape, the intersection of design and marketing has become increasingly vital for businesses aiming to best captivate audiences and drive success. Crafting compelling designs.</p>
-                          <p class="pera">Psychology and market trends. Through strategic marketing, these an designs are brought to life, leveraging data-driven insights innovative.</p>
-                          <div class="btn-area1">
-                            <a href="contact.html" class="vl-btn1">Get in touch now</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-lg-5">
-                      <div class="contact-from-area" data-aos="flip-right" data-aos-duration="1000">
-                        <h3>Leave A Message</h3>
-                       <form action="https://api.web3forms.com/submit" method="POST">
-                        <input type="hidden" name="access_key" value="0cd32fff-eda2-4da3-be43-37d47fbb396b">
-
-                        <div class="input">
-                            <input type="text" placeholder="Full Name">
-                          </div>
-                          <div class="input">
-                            <input type="number" placeholder="Phone Number" required>
-                          </div>
-                          <div class="input">
-                            <input type="email" placeholder="Email Address" required>
-                          </div>
-                          <div class="input">
-                            <select name="country" id="country" class="country-area nice-select6">
-                              <option value="1" data-display="Service Type">Service Type</option>
-                              <option value="">Belgium</option>
-                              <option value="">Brezil</option>
-                              <option value="">Argentina</option>
-                              <option value="">Bangladesh</option>
-                              <option value="">Germany</option>
-                            </select>
-                          </div>
-                          <div class="input">
-                            <textarea placeholder="Message" required></textarea>
-                          </div>
-                          <div class="space32"></div>
-                          <div class="btn-area text-end" data-aos="fade-up" data-aos-duration="1200">
-                            <button type="submit" class="vl-btn1">submit now</button>
-                          </div>
-                       </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>  
-  </div>  
-  <div class="bg-overlay"></div>
-</div> 
-<!--===== POPUP ENDS =======-->
+ 
 
   <!--===== JS SCRIPT LINK =======-->
   <script src="assets/js/plugins/bootstrap.min.js"></script>

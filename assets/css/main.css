@@ -1319,6 +1319,8 @@ Location:
   justify-content: center;
   font-family: var(--ztc-family-font1);
   font-weight: var(--ztc-weight-bold);
+  overflow: hidden;
+  position: relative;
 }
 .service-section-area .exp-body {
   flex: 1;
@@ -1440,14 +1442,21 @@ Location:
   .service-section-area .experience-item {
     flex-direction: column;
   }
+  .service-section-area .exp-top {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
   .service-section-area .exp-meta {
     text-align: left;
     min-width: 0;
     justify-self: start;
   }
   .service-section-area .exp-heading h4,
-  .service-section-area .exp-company {
+  .service-section-area .exp-company,
+  .service-section-area .exp-meta {
     white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
   }
 }
 
@@ -1485,6 +1494,8 @@ Location:
   justify-content: center;
   font-family: var(--ztc-family-font1);
   font-weight: var(--ztc-weight-bold);
+  overflow: hidden;
+  position: relative;
 }
 .education-section-area .exp-body {
   flex: 1;
@@ -1493,6 +1504,28 @@ Location:
   gap: 12px;
   align-items: flex-start;
   text-align: left;
+}
+.exp-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  padding: 0;
+  border-radius: 50%;
+  display: block;
+}
+.exp-icon.photo {
+  background: transparent;
+  color: inherit;
+}
+.exp-icon.photo.logo {
+  background: #fff;
+  border: 1px solid var(--ztc-border-border-2);
+  width: 56px;
+  height: 56px;
+}
+.exp-icon.photo.logo img {
+  object-fit: contain;
+  padding: 2px;
 }
 .education-section-area .exp-top {
   display: grid;
@@ -1590,10 +1623,24 @@ Location:
   .education-section-area .experience-item {
     flex-direction: column;
   }
+  .education-section-area .exp-top {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
   .education-section-area .exp-meta {
     text-align: left;
     min-width: 0;
     justify-self: start;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+  .education-section-area .exp-heading h4,
+  .education-section-area .exp-body h4,
+  .education-section-area .exp-company {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
   }
 }
 .service-section-area .service-main-boxes {
@@ -5804,6 +5851,64 @@ Location:
 .skill-section-area {
   position: relative;
   z-index: 1;
+}
+.skill-section-area .skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.skill-section-area .skill-category {
+  background: var(--ztc-bg-bg2);
+  border: 1px solid var(--ztc-border-border-2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.skill-section-area .skill-category-title {
+  font-family: var(--ztc-family-font1);
+  font-size: var(--ztc-font-size-font-s18);
+  color: var(--ztc-text-text-1);
+  font-weight: var(--ztc-weight-semibold);
+  margin: 0;
+}
+.skill-section-area .skill-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.skill-section-area .skill-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--ztc-bg-bg3);
+  border: 1px solid var(--ztc-border-border-2);
+}
+.skill-section-area .skill-logo-wrap {
+  height: 36px;
+  width: 36px;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.skill-section-area .skill-logo {
+  max-height: 28px;
+  max-width: 28px;
+  object-fit: contain;
+  display: block;
+}
+.skill-section-area .skill-label {
+  color: var(--ztc-text-text-1);
+  font-family: var(--ztc-family-font1);
+  font-size: var(--ztc-font-size-font-s16);
+  font-weight: var(--ztc-weight-semibold);
+  margin: 0;
 }
 .skill-section-area .skill-boxarea {
   position: relative;
