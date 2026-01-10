@@ -61,7 +61,7 @@
         }
         //========== VIDEO POPUP ENDS ============= //
         AOS.init;
-        AOS.init({ disable: 'mobile' });
+        AOS.init({ disable: 'mobile', once: true });
 
         //========== NICE SELECT ============= //
         $('select').niceSelect();

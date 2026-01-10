@@ -4630,7 +4630,7 @@ Location:
   justify-content: space-between;
   position: relative;
   transition: all 0.4s;
-  padding-right: 80px;
+  padding-right: 0;
 }
 .header-area.homepage1 .header-elements .site-logo img {
   width: 147px;
@@ -4641,7 +4641,7 @@ Location:
 .header-area.homepage1 .header-elements .btn-area {
   display: flex;
   align-items: center;
-  margin-right: 64px;
+  margin-right: 0;
 }
 .header-area.homepage1 .header-elements .btn-area .vl-btn1 {
   margin: 0 24px;
@@ -4653,12 +4653,12 @@ Location:
 }
 @media only screen and (min-width: 768px) and (max-width: 1199px) {
   .header-area.homepage1 .header-elements {
-    padding-right: 48px;
+    padding-right: 0;
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1199px) {
   .header-area.homepage1 .header-elements .btn-area {
-    margin-right: 40px;
+    margin-right: 0;
   }
 }
 .header-area.homepage1 .header-elements .btn-area button {

@@ -83,12 +83,17 @@
       background: #e9e2d6;
       display: flex;
       align-self: stretch;
+      min-height: 520px;
     }
     .project-card .thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+    .project-card .thumb .project-slide img {
+      object-fit: contain;
+      background: #f5efe3;
     }
     .project-carousel {
       position: relative;
@@ -110,10 +115,50 @@
     .project-slide img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center;
       display: block;
+      background: #f5efe3;
     }
+    .project-slide img.zoomable {
+      cursor: zoom-in;
+    }
+    .image-zoom-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.85);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px;
+      overflow: auto;
+      z-index: 9999;
+    }
+    .image-zoom-modal.open { display: flex; }
+    .image-zoom-modal img {
+      max-width: none;
+      max-height: none;
+      width: auto;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      background: #f5efe3;
+    }
+    .image-zoom-close {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(255,255,255,0.9);
+      color: #111;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    body.no-scroll { overflow: hidden; }
     .project-slide img.contain-img {
       object-fit: contain;
       background: #f5efe3;
@@ -150,13 +195,13 @@
     .tool-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
+      gap: 0;
+      padding: 4px 8px;
       border-radius: 6px;
       background: #2c84e3;
       color: #fff;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 12px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     }
     .tool-badge img {
@@ -203,7 +248,7 @@
         max-height: none;
         opacity: 1;
       }
-      .project-card .thumb { width: 100%; flex: 0 0 auto; }
+      .project-card .thumb { width: 100%; flex: 0 0 auto; min-height: 420px; }
       .project-stack { padding-bottom: 0; }
     }
 
@@ -273,42 +318,29 @@
         </div>
         <div class="sidebar-content">
           <ul>
-            <li><a href="#list-item-1">Home</a></li>
-            <li><a href="#list-item-2">About Us</a></li>
-            <li><a href="#list-item-5">Portfolio</a></li>
-            <li><a href="#list-item-4">Skill</a></li>
-            <li><a href="#list-item-3">service</a></li>
-            <li><a href="#list-item-6">Testimonial</a></li>
-            <li><a href="#list-item-7">Blogs</a></li>
-            <li><a href="#list-item-8">Contact</a></li>
+            <li><a href="#list-item-2">About Me</a></li>
+            <li><a href="#list-item-5">Projects</a></li>
+            <li><a href="#list-item-4">My Skill</a></li>
+            <li><a href="#list-item-3">Experience</a></li>
+            <li><a href="#list-item-6">Education</a></li>
           </ul>
         </div>
         <div class="space32"></div>
         <div class="space16"></div>
         <div class="btn-area">
-          <a href="contact.html" class="vl-btn1">Get in touch now <img src="assets/img/icons/mail1.svg" alt=""></a>
+          <a href="https://linkedin.com/in/tinotendamaisiri" class="vl-btn1" target="_blank" rel="noopener">Get in touch now <img src="assets/img/icons/mail1.svg" alt=""></a>
         </div>
         <div class="space40"></div>
         <div class="social-link-area">
           <h3 class="sidebar-heading">Social Links</h3>
           <ul>
             <li>
-              <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-              <a href="#"><i class="fa-brands fa-instagram"></i></a>
-              <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-              <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
-              <a href="#"><i class="fa-brands fa-youtube"></i></a>
+              <a href="https://linkedin.com/in/tinotendamaisiri" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a>
+              <a href="https://github.com/tinotendamaisiri" aria-label="GitHub" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a>
             </li>
           </ul>
         </div>
         <div class="space40"></div>
-        <div class="form-area">
-          <h3>Subscribe To Newsletter</h3>
-          <form>
-            <input type="text" placeholder="Email Address*">
-            <button type="submit" class="vl-btn1">subscribe</button>
-          </form>
-        </div>
       </div>
     </div>
   </div>
@@ -333,7 +365,7 @@
                     </span>
                   </label>
                 </div>
-                <a href="https://linkedin.com/in/tinotendamaisiri" class="vl-btn1">HIRE ME <span><img src="assets/img/icons/mail1.svg" alt=""></span></a>
+                <a href="https://linkedin.com/in/tinotendamaisiri" class="vl-btn1" target="_blank" rel="noopener">HIRE ME <span><img src="assets/img/icons/mail1.svg" alt=""></span></a>
                 <button class="hamburger_menu"><img src="assets/img/icons/bars-icons1.svg" alt=""></button>
               </div>
             </div>
@@ -395,8 +427,8 @@
             <p>Hi, I’m Tino, I design and build scalable data, cloud, and AI solutions that solve real business problems..</p>
             <div class="space32"></div>
             <ul>
-              <li><a href="https://linkedin.com/in/tinotendamaisiri" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
-              <li><a href="https://github.com/tinotendamaisiri" aria-label="GitHub"><i class="fa-brands fa-github"></i></a></li>
+              <li><a href="https://linkedin.com/in/tinotendamaisiri" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i></a></li>
+              <li><a href="https://github.com/tinotendamaisiri" aria-label="GitHub" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a></li>
             </ul>
             <!--<div class="space44"></div>
             <div class="btn-area1 text-center">
@@ -493,13 +525,13 @@
                           <p class="project-desc">Implemented authentication, a GraphQL API, and scalable data storage using managed AWS services, with optional file uploads per goal. The application demonstrates end-to-end SaaS architecture, from frontend hosting to backend APIs and persistent storage, without managing servers.</p>
                           <div class="tools-title">Tools</div>
                           <div class="tool-badges">
-                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
-                            <span class="tool-badge alt"><img src="assets/img/icons/awsamplify.svg" alt="">AWS Amplify</span>
-                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="">React</span>
-                            <span class="tool-badge green"><img src="assets/img/icons/amazoncognito.svg" alt="">Amazon Cognito</span>
-                            <span class="tool-badge purple"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS AppSync</span>
-                            <span class="tool-badge"><img src="assets/img/icons/amazondynamodb.svg" alt="">DynamoDB</span>
-                            <span class="tool-badge alt"><img src="assets/img/icons/amazons3.svg" alt="">Amazon S3</span>
+                            <span class="tool-badge">AWS</span>
+                            <span class="tool-badge alt">AWS Amplify</span>
+                            <span class="tool-badge dark">React</span>
+                            <span class="tool-badge green">Amazon Cognito</span>
+                            <span class="tool-badge purple">AWS AppSync</span>
+                            <span class="tool-badge">DynamoDB</span>
+                            <span class="tool-badge alt">Amazon S3</span>
                           </div>
                           <div class="links-title">Links</div>
                           <div class="project-links">
@@ -508,72 +540,42 @@
                         </div>
                       </div>
                     </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
+                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1050">
                       <summary>
-                        <span class="project-title">Hybrid Cloud Migration</span>
+                        <span class="project-title">SecureCart — Secure E-Commerce Architecture (AWS Security Pillar)</span>
                         <span class="accordion-icon" aria-hidden="true"></span>
                       </summary>
                       <div class="project-body">
                         <div class="thumb">
                           <div class="project-carousel stacked" data-autoplay="false">
                             <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Cloud migration dashboards"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Hybrid landing zone view"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Cutover observability"></div>
+                              <div class="project-slide"><img src="assets/img/projects/AWS Secure cart.png" alt="SecureCart architecture diagram"></div>
+                              <div class="project-slide"><img src="assets/img/projects/securecart1.png" alt="SecureCart application view"></div>
+                              <div class="project-slide"><img src="assets/img/projects/secure cart 2 .png" alt="SecureCart security controls"></div>
                             </div>
                             <div class="carousel-dots"></div>
                           </div>
                         </div>
                         <div class="project-content">
                           <div class="tools-title">Description</div>
-                          <p class="project-desc">Migrated core workloads to a hybrid landing zone with VPN/Direct Connect, automated cutovers, and observability baselines.</p>
-                          <p class="project-desc">Implemented IaC blueprints for repeatable VPC builds, backup policies, and guardrails to keep environments compliant.</p>
+                          <p class="project-desc">Cloud Security • AWS Architecture</p>
+                          <p class="project-desc">Intentionally designed and deployed an insecure e-commerce application on AWS to simulate real-world cloud security failures, then rebuilt the system following the AWS Well-Architected Framework (Security Pillar).</p>
+                          <p class="project-desc">This project demonstrates secure network isolation, least-privilege access control, defense-in-depth, and application-layer protection using AWS-native services.</p>
                           <div class="tools-title">Tools</div>
                           <div class="tool-badges">
-                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
-                            <span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="">Terraform</span>
-                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="">Azure</span>
-                            <span class="tool-badge green"><img src="https://cdn.simpleicons.org/ansible/EE0000" alt="">Ansible</span>
-                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+                            <span class="tool-badge">AWS</span>
+                            <span class="tool-badge alt">Amazon VPC</span>
+                            <span class="tool-badge dark">EC2</span>
+                            <span class="tool-badge green">Application Load Balancer (ALB)</span>
+                            <span class="tool-badge purple">NAT Gateway</span>
+                            <span class="tool-badge">Amazon RDS</span>
+                            <span class="tool-badge alt">Amazon S3</span>
+                            <span class="tool-badge dark">AWS WAF</span>
+                            <span class="tool-badge green">IAM</span>
                           </div>
                           <div class="links-title">Links</div>
                           <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                          </div>
-                        </div>
-                      </div>
-                    </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
-                      <summary>
-                        <span class="project-title">Cloud FinOps Toolkit</span>
-                        <span class="accordion-icon" aria-hidden="true"></span>
-                      </summary>
-                      <div class="project-body">
-                        <div class="thumb">
-                          <div class="project-carousel stacked" data-autoplay="false">
-                            <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Cloud cost optimization"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="FinOps dashboard views"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Guardrails and tagging hygiene"></div>
-                            </div>
-                            <div class="carousel-dots"></div>
-                          </div>
-                        </div>
-                        <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Built cost dashboards and alerts for tagging hygiene, idle resources, and RI/Savings Plan coverage with automated remediations.</p>
-                          <p class="project-desc">Aligned budgets to business units with chargeback reports and weekly variance digests for engineering leads.</p>
-                          <div class="tools-title">Tools</div>
-                          <div class="tool-badges">
-                            <span class="tool-badge"><img src="assets/img/icons/amazonwebservices.svg" alt="">AWS</span>
-                            <span class="tool-badge alt"><img src="assets/img/icons/amazonwebservices.svg" alt="">Athena</span>
-                            <span class="tool-badge dark"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="">Azure</span>
-                            <span class="tool-badge green"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
-                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-                          </div>
-                          <div class="links-title">Links</div>
-                          <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                            <a href="https://github.com/tinotendamaisiri/secure-cart-aws" class="project-link" target="_blank" rel="noopener">GitHub</a>
                           </div>
                         </div>
                       </div>
@@ -584,103 +586,44 @@
                   <div class="col-lg-12">
                     <div class="space30"></div>
                     <div class="service-header heading1">
-                      <h5 data-aos="fade-left" data-aos-duration="900"><img src="assets/img/icons/sublogo1.svg" alt="">Data Analytics/Engineering</h5>
+                      <h5 data-aos="fade-left" data-aos-duration="900"><img src="assets/img/icons/sublogo1.svg" alt="">Data Science/Engineering</h5>
                     </div>
                     <div class="space20"></div>
                     <div class="project-stack">
                     <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="900" open>
                       <summary>
-                        <span class="project-title">Sales Intelligence Dashboard</span>
+                        <span class="project-title">SMOTE–WCGAN-GP Hybrid for Tabular Data Augmentation</span>
                         <span class="accordion-icon" aria-hidden="true"></span>
                       </summary>
                       <div class="project-body">
                         <div class="thumb">
                           <div class="project-carousel stacked" data-autoplay="false">
                             <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Data analytics dashboard"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Semantic layer views"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Revenue and churn reporting"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img5.svg" alt="Research diagram placeholder"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img5.svg" alt="WCGAN-GP architecture overview"></div>
+                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img5.svg" alt="Hybrid pipeline visual"></div>
                             </div>
                             <div class="carousel-dots"></div>
                           </div>
                         </div>
                         <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Built an end-to-end data pipeline from ingestion to semantic layer, delivering self-serve revenue, churn, and cohort insights for sales leadership.</p>
-                          <p class="project-desc">Modeled facts/dimensions, optimized queries, and automated refreshes to keep dashboards fresh with SLA-backed latency.</p>
+                          <p class="project-desc">Data Science • Machine Learning • Research</p>
+                          <div class="tools-title">Machine Learning • Data Augmentation • Research</div>
+                          <p class="project-desc">Conducted an in-depth academic study on tabular data augmentation methods for employee attrition prediction, analyzing both classical oversampling and generative approaches.</p>
+                          <p class="project-desc">The project evaluates SMOTE, GAN-based models, and Wasserstein Conditional GAN with Gradient Penalty (WCGAN-GP), concluding that WCGAN-GP best preserves feature correlations, statistical distributions, and data privacy. A hybrid SMOTE–WCGAN-GP approach is proposed to address data sparsity and class imbalance.</p>
                           <div class="tools-title">Tools</div>
                           <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/mysql/00758F" alt="MySQL">SQL</span>
-                            <span class="tool-badge alt"><img src="https://cdn.simpleicons.org/dbt/ffffff" alt="">dbt</span>
-                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-                            <span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span>
-                            <span class="tool-badge green"><img src="https://cdn.simpleicons.org/powerbi/ffffff" alt="">Power BI</span>
+                            <span class="tool-badge">Python</span>
+                            <span class="tool-badge alt">SMOTE</span>
+                            <span class="tool-badge purple">WCGAN-GP</span>
+                            <span class="tool-badge dark">GANs</span>
+                            <span class="tool-badge green">XGBoost</span>
+                            <span class="tool-badge">Statistical Analysis</span>
+                            <span class="tool-badge alt">Machine Learning</span>
                           </div>
                           <div class="links-title">Links</div>
                           <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                          </div>
-                        </div>
-                      </div>
-                    </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
-                      <summary>
-                        <span class="project-title">Real-Time Metrics Pipeline</span>
-                        <span class="accordion-icon" aria-hidden="true"></span>
-                      </summary>
-                      <div class="project-body">
-                        <div class="thumb">
-                          <div class="project-carousel stacked" data-autoplay="false">
-                            <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="Streaming analytics board"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Real-time metrics feed"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Feature store snapshots"></div>
-                            </div>
-                            <div class="carousel-dots"></div>
-                          </div>
-                        </div>
-                        <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Ingested clickstream events into a streaming lakehouse, powering real-time KPIs and anomaly alerts for product teams.</p>
-                          <p class="project-desc">Delivered curated feature stores and CDC feeds for downstream ML/BI consumers with SLA-backed freshness.</p>
-                          <div class="tools-title">Tools</div>
-                          <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/apachekafka/ffffff" alt="">Kafka</span><span class="tool-badge alt"><img src="https://cdn.simpleicons.org/dbt/ffffff" alt="">dbt</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/looker/ffffff" alt="">Looker</span>
-                          </div>
-                          <div class="links-title">Links</div>
-                          <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                          </div>
-                        </div>
-                      </div>
-                    </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
-                      <summary>
-                        <span class="project-title">Data Quality Command Center</span>
-                        <span class="accordion-icon" aria-hidden="true"></span>
-                      </summary>
-                      <div class="project-body">
-                        <div class="thumb">
-                          <div class="project-carousel stacked" data-autoplay="false">
-                            <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Data quality monitors"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Lineage and SLAs"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="Incident workflows"></div>
-                            </div>
-                            <div class="carousel-dots"></div>
-                          </div>
-                        </div>
-                        <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Implemented rules, contracts, and lineage views to detect schema drift and null explosions before they hit dashboards.</p>
-                          <p class="project-desc">Surfaced data SLAs with incident workflows so owners get paged and issues are triaged fast.</p>
-                          <div class="tools-title">Tools</div>
-                          <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.simpleicons.org/greatexpectations/ffffff" alt="">Great Expectations</span><span class="tool-badge alt"><img src="https://cdn.simpleicons.org/airbyte/ffffff" alt="">Airbyte</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/apacheairflow/ffffff" alt="">Airflow</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/snowflake/ffffff" alt="">Snowflake</span>
-                          </div>
-                          <div class="links-title">Links</div>
-                          <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
+                            <a href="https://github.com/tinotendamaisiri/smote-wcgan-gp-tabular-augmentation" class="project-link" target="_blank" rel="noopener">GitHub</a>
                           </div>
                         </div>
                       </div>
@@ -715,74 +658,12 @@
                           <p class="project-desc">Integrated LLM prompts, task orchestration, and guardrails to ensure accurate recommendations across CRM and analytics data.</p>
                           <div class="tools-title">Tools</div>
                           <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-                            <span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span>
-                            <span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span>
-                            <span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span>
-                            <span class="tool-badge green"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="">Java</span>
-                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
-                          </div>
-                          <div class="links-title">Links</div>
-                          <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                          </div>
-                        </div>
-                      </div>
-                    </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="950">
-                      <summary>
-                        <span class="project-title">Support Copilot</span>
-                        <span class="accordion-icon" aria-hidden="true"></span>
-                      </summary>
-                      <div class="project-body">
-                        <div class="thumb">
-                          <div class="project-carousel stacked" data-autoplay="false">
-                            <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img1.png" alt="AI assistant board"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Support copilot responses"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Runbook retrieval"></div>
-                            </div>
-                            <div class="carousel-dots"></div>
-                          </div>
-                        </div>
-                        <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Built an LLM copilot for support reps with retrieval from tickets, runbooks, and product docs to cut handle time.</p>
-                          <p class="project-desc">Added guardrails, feedback loops, and red-team tests to keep responses safe and auditable.</p>
-                          <div class="tools-title">Tools</div>
-                          <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span><span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/langchain/ffffff" alt="">LangChain</span>
-                          </div>
-                          <div class="links-title">Links</div>
-                          <div class="project-links">
-                            <a href="https://github.com/tinotendamaisiri" class="project-link" target="_blank" rel="noopener">GitHub</a>
-                          </div>
-                        </div>
-                      </div>
-                    </details>
-                    <details class="project-card project-accordion" data-aos="fade-left" data-aos-duration="1000">
-                      <summary>
-                        <span class="project-title">ML Ops Observability</span>
-                        <span class="accordion-icon" aria-hidden="true"></span>
-                      </summary>
-                      <div class="project-body">
-                        <div class="thumb">
-                          <div class="project-carousel stacked" data-autoplay="false">
-                            <div class="carousel-track">
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img2.png" alt="ML operations dashboard"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img4.png" alt="Model monitoring views"></div>
-                              <div class="project-slide"><img src="assets/img/all-images/portfolio/portfolio-img3.png" alt="Registry and experiments"></div>
-                            </div>
-                            <div class="carousel-dots"></div>
-                          </div>
-                        </div>
-                        <div class="project-content">
-                          <div class="tools-title">Description</div>
-                          <p class="project-desc">Deployed monitoring for drift, data integrity, and latency with auto rollbacks and canary promotion policies.</p>
-                          <p class="project-desc">Centralized experiment tracking and model registry with CI/CD to lower cycle time from notebook to prod.</p>
-                          <div class="tools-title">Tools</div>
-                          <div class="tool-badges">
-                            <span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span><span class="tool-badge purple"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="">TypeScript</span><span class="tool-badge alt"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span><span class="tool-badge dark"><img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="">SQL</span><span class="tool-badge green"><img src="https://cdn.simpleicons.org/mlflow/ffffff" alt="">MLflow</span><span class="tool-badge"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" alt="">Bash</span>
+                            <span class="tool-badge">Python</span>
+                            <span class="tool-badge purple">TypeScript</span>
+                            <span class="tool-badge alt">JavaScript</span>
+                            <span class="tool-badge dark">SQL</span>
+                            <span class="tool-badge green">Java</span>
+                            <span class="tool-badge">Bash</span>
                           </div>
                           <div class="links-title">Links</div>
                           <div class="project-links">
@@ -1142,6 +1023,11 @@
 
  
 
+  <div class="image-zoom-modal" id="image-zoom-modal" aria-hidden="true">
+    <button class="image-zoom-close" type="button" aria-label="Close image zoom">x</button>
+    <img src="" alt="">
+  </div>
+
   <!--===== JS SCRIPT LINK =======-->
   <script src="assets/js/plugins/bootstrap.min.js"></script>
   <script src="assets/js/plugins/fontawesome.js"></script>
@@ -1173,6 +1059,50 @@
       cards.forEach(card => {
         card.classList.add('collapsed');
         observer.observe(card);
+      });
+
+      const modal = document.getElementById('image-zoom-modal');
+      const modalImg = modal ? modal.querySelector('img') : null;
+      const modalClose = modal ? modal.querySelector('.image-zoom-close') : null;
+      const zoomableImages = document.querySelectorAll('.project-slide img');
+
+      zoomableImages.forEach(img => {
+        img.classList.add('zoomable');
+        img.addEventListener('click', () => {
+          if (!modal || !modalImg) return;
+          modalImg.src = img.currentSrc || img.src;
+          modalImg.alt = img.alt || 'Project image';
+          modal.classList.add('open');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('no-scroll');
+        });
+      });
+
+      const closeModal = () => {
+        if (!modal || !modalImg) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalImg.src = '';
+        modalImg.alt = '';
+        document.body.classList.remove('no-scroll');
+      };
+
+      if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+      }
+
+      if (modal) {
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal && modal.classList.contains('open')) {
+          closeModal();
+        }
       });
     });
   </script>
